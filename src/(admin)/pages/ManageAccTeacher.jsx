@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getData, deleteData, updateData, postData } from '@/api/axios';
 import Button from '@/components/Button';
 import SearchBox from '@/components/SearchBox';
+import PaginationButton from '@/components/PaginationButton';
 
 export default function ManageAccStudent({ endPointParams, ...props }) {
   const [posts, setPosts] = useState([]);
@@ -12,7 +13,9 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', nip: '', status: '', specialization: '' });
+  const [searchData, setSearchData] = useState({ name: "", nip: "" });
+  const [addData, setAddData] = useState({ name: "", nip: "", specialization: "", status:"" });
+  const [editData, setEditData] = useState({ name: "", nip: "", specialization: "", status:"" });
   const [isAscending, setIsAscending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [specialization, setSpecialization] = useState("");
@@ -30,44 +33,36 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
     fetchData();
   }, [currentPage, endPointParams]);
 
-  // handling filter
-  const handleFilter = async (selectedSpecialization) => {
+  // handling filter, sort, & search
+  const handleFetchData = async () => {
     try {
-      setSpecialization(selectedSpecialization);
-      const filterData = await getData(`${endPointParams}?specialization=${selectedSpecialization}`);
-      setPosts(filterData.students || []);
-      setTotalPages(filterData?.meta?.totalPage || 1);
+      let queryParams = [];
+  
+      if (specialization) {
+        queryParams.push(`specialization=${specialization}`);
+      }
+  
+      if (searchData.name) {
+        queryParams.push(`search=${searchData.name}`);
+      }
+  
+      if (searchData.nip) {
+        queryParams.push(`searchNIP=${searchData.nip}`);
+      }
+  
+      if (typeof isAscending === 'boolean') {
+        queryParams.push(`sortByNIP=${isAscending}`);
+      }
+  
+      const finalEndpoint = `${endPointParams}?${queryParams.join('&')}`;
+      const data = await getData(finalEndpoint);
+      setPosts(data.students || []);
+      setTotalPages(data?.meta?.totalPage || 1);
     } catch (error) {
-      console.error("Failed to Filter Data", error);
-      alert("Failed to Filter Data");
+      console.error("Failed to Fetch Data", error);
+      alert("Failed to Fetch Data");
     }
   };
-
-  // handling sort
-  const handleSort = async () => {
-    try {
-      const newSortOrder = !isAscending;
-      setIsAscending(newSortOrder);
-      const sortedData = await getData(`${endPointParams}?sortByNIP=${newSortOrder}`);
-      setPosts(sortedData.students || []);
-      setTotalPages(sortedData?.meta?.totalPage || 1);
-    } catch (error) {
-      console.error("Failed to Sort by NIP", error);
-      alert("Failed to Sort by NIP");
-    }
-  };
-
-  // handling search
-  const handleSearch = async () => {
-    try {
-      const searchedData = await getData(endPointParams + `?search=${formData.name}&searchNIP=${formData.nip}`);
-      setPosts(searchedData.students || []);
-      setTotalPages(searchedData?.meta?.totalPage || 1);
-    } catch (error) {
-      console.error("Failed to Search Teacher Accounts", error);
-      alert("Failed to Search Teacher Accounts");
-    }
-  };  
 
   const handleDelete = async () => {
     if (!selectedTeacher) return;
@@ -82,8 +77,8 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
 
   const handleEditSubmit = async () => {
     try {
-      await updateData(endPointParams + `?id=${selectedTeacher.id}`, formData);
-      setPosts(posts.map(post => (post.id === selectedTeacher.id ? { ...post, ...formData } : post)));
+      await updateData(endPointParams + `?id=${selectedTeacher.id}`, editData);
+      setPosts(posts.map(post => (post.id === selectedTeacher.id ? { ...post, ...editData } : post)));
       setShowEditModal(false);
     } catch (error) {
       console.error("Failed to Updating Data:", error);
@@ -92,23 +87,33 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
 
   const handleAddSubmit = async () => {
     try {
-      const newTeacher = await postData(endPointParams, formData); // Kirim formData ke API
+      if (!addData.name || !addData.nip || !addData.status || !addData.specialization) {
+        alert("Semua field harus diisi.");
+        return;
+      }
+      const newTeacher = await postData(endPointParams, addData); // Kirim formData ke API
       setPosts([...posts, newTeacher]);
       setShowAddModal(false);
-      setFormData({ name: '', nip: '', status: '', specialization: '' });
+      setAddData({ name: '', nip: '', status: '', specialization: '' });
+      handleFetchData();
+      alert("Teacher Added Successfully");
     } catch (error) {
       console.error("Error adding post:", error.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+    handleFetchData();
+  }, [specialization, searchData.name, searchData.nip, isAscending]);
 
   return (
     <div className='ml-[22rem] mr-24 mt-16 mb-10'>
       <div className='flex justify-between items-end mb-6'>
         <div className='flex flex-col gap-2 min-w-md'>
           <h1 className="text-3xl font-bold">Teacher Accounts</h1>
-          <SearchBox
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            onSearch={handleSearch}
+          <SearchBox //search box
+            onChange={(e) => setSearchData({ ...searchData, name: e.target.value })}
+            onSearch={handleFetchData}
             placeHolder={placeHolderText}
           />
         </div>
@@ -136,7 +141,8 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
                     <li key={specializationOption}>
                       <button
                         onClick={() => {
-                          handleFilter(specializationOption);
+                          setSpecialization(specializationOption);
+                          handleFetchData(specializationOption);
                           setIsOpen(false);
                         }}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -152,7 +158,10 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
 
           {/* button sort */}
           <Button
-            onClick={handleSort}
+            onClick={() => {
+              setIsAscending(!isAscending);
+              handleFetchData();
+            }}
             className="flex items-center gap-2 border border-primary text-primary text-sm hoverAnimation"
           >
             Sort by NIP 
@@ -187,30 +196,30 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
         </div>
       </div>
       {/* main container tabelnya */}
-      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl">
+      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden text-sm">
           <thead>
-            <tr className="bg-primary text-white">
-              <th className="border-y px-4 py-2">Name</th>
-              <th className="border-y px-4 py-2">NIP</th>
-              <th className="border-y px-4 py-2">Specialization</th>
-              <th className="border-y px-4 py-2">Status</th>
-              <th className='border-y px-4 py-2'>Action</th>
+            <tr>
+              <th className="border-y px-4 py-2 text-start border-gray-400">Name</th>
+              <th className="border-y px-4 py-2 text-start border-gray-400">NIP</th>
+              <th className="border-y px-4 py-2 text-start border-gray-400">Specialization</th>
+              <th className="border-y px-4 py-2 text-start border-gray-400">Status</th>
+              <th className='border-y px-4 py-2 text-start border-gray-400'>Action</th>
             </tr>
           </thead>
           <tbody>
             {posts.map((post) => (
-              <tr key={post.id} className="text-center">
-                <td className="border-y px-4 py-2">{post.name}</td>
-                <td className="border-y px-4 py-2">{post.nip}</td>
-                <td className="border-y px-4 py-2">{post.specialization}</td>
-                <td className="border-y px-4 py-2">{post.status}</td>
-                <td className="border-y px-4 py-2">
-                  <div className='flex justify-center items-center gap-4'> {/* container button */}
+              <tr key={post.id} className="text-start">
+                <td className="border-y px-4 py-2 border-gray-300 font-semibold">{post.name}</td>
+                <td className="border-y px-4 py-2 border-gray-300">{post.nip}</td>
+                <td className="border-y px-4 py-2 border-gray-300">{post.specialization}</td>
+                <td className="border-y px-4 py-2 border-gray-300">{post.status}</td>
+                <td className="border-y px-4 py-2 border-gray-300">
+                  <div className='flex justify-start items-center gap-4'> {/* container button */}
                     {/* button edit */}
                     <button onClick={() => { 
                       setselectedTeacher(post); 
-                      setFormData(post); 
+                      setEditData(post); 
                       setShowEditModal(true); 
                     }}>
                       <svg
@@ -261,89 +270,12 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
           </tbody>
         </table>
       </div>
-      {/* Pagination Button */}
-      <div className="flex gap-2 mt-8 justify-center items-center">
-        {/* Tombol Previous */}
-        <button
-          className="p-2 cursor-pointer flex items-center justify-center rounded-full border border-gray-600 bg-white disabled:opacity-50 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="1em"
-            height="1em"
-            {...props}
-          >
-            <path
-              fill="currentColor"
-              d="M14.71 15.88L10.83 12l3.88-3.88a.996.996 0 1 0-1.41-1.41L8.71 11.3a.996.996 0 0 0 0 1.41l4.59 4.59c.39.39 1.02.39 1.41 0c.38-.39.39-1.03 0-1.42"
-            ></path>
-          </svg>
-        </button>
 
-        {/* Logic nampilin halaman */}
-        {totalPages > 5 && currentPage > 3 && (
-          <button
-            className="py-2 px-3.5 text-xs flex items-center justify-center rounded-full border border-gray-600 bg-white "
-            onClick={() => setCurrentPage(1)}
-          >
-            1
-          </button>
-        )}
-        {totalPages > 5 && currentPage > 3 && <span className="text-gray-600">...</span>}
-
-        {Array.from({ length: totalPages }, (_, index) => index + 1)
-          .filter((page) => {
-            if (totalPages <= 5) return true; // Kalo halaman ≤ 5, nampilin semua
-            if (currentPage <= 3) return page <= 5; // kalo di halaman awal, nampilin 1-5
-            if (currentPage >= totalPages - 2) return page >= totalPages - 4; // kalo di akhir, nampilin 5 terakhir
-            return Math.abs(currentPage - page) <= 2; // nampilin halaman sekitar halaman aktif
-          })
-          .map((page) => (
-            <button
-              key={page}
-              className={`py-2 px-3.5 text-xs cursor-pointer flex items-center justify-center rounded-full border border-gray-600 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500 ${
-                currentPage === page ? "bg-sky-500 text-white border-sky-500" : "bg-white"
-              }`}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </button>
-          ))}
-
-        {totalPages > 5 && currentPage < totalPages - 2 && <span className="text-gray-600">...</span>}
-
-        {totalPages > 5 && currentPage < totalPages - 2 && (
-          <button
-            className="py-2 px-3.5 text-xs flex items-center justify-center rounded-full border border-gray-600 bg-white"
-            onClick={() => setCurrentPage(totalPages)}
-          >
-            {totalPages}
-          </button>
-        )}
-
-        {/* Tombol Next */}
-        <button
-          className="p-2 cursor-pointer flex items-center justify-center rounded-full border border-gray-600 bg-white disabled:opacity-50 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="1em"
-            height="1em"
-            {...props}
-          >
-            <path
-              fill="currentColor"
-              d="M9.29 15.88L13.17 12L9.29 8.12a.996.996 0 1 1 1.41-1.41l4.59 4.59c.39.39.39 1.02 0 1.41L10.7 17.3a.996.996 0 0 1-1.41 0c-.38-.39-.39-1.03 0-1.42">
-            </path>
-          </svg>
-        </button>
-      </div>
+      <PaginationButton
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
       {/* modal confirm delete */}
       {showDeleteModal && (
@@ -367,27 +299,27 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
             <div className='text-sm'>
               <label className="block">
                 <span>Name:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.name} 
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={editData.name} 
+                  onChange={(e) => setEditData({ ...editData, name: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>NIP:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.nip} 
-                  onChange={(e) => setFormData({ ...formData, nip: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={editData.nip} 
+                  onChange={(e) => setEditData({ ...editData, nip: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>Status:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={editData.status} 
+                  onChange={(e) => setEditData({ ...editData, status: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>specialization:</span>
-                <input type="text" name="specialization" className="w-full p-2 border rounded-lg" value={formData.specialization}
-                  onChange={(e) => setFormData({ ...formData, specialization: e.target.value })} />
+                <input type="text" name="specialization" className="w-full p-2 border rounded-lg" value={editData.specialization}
+                  onChange={(e) => setEditData({ ...editData, specialization: e.target.value })} />
               </label>
               <div className="flex gap-2 mt-4 text-sm">
                 <Button className="border border-success text-success rounded-lg cursor-pointer hoverAnimation3" onClick={handleEditSubmit}>Save</Button>
-                <Button className="border border-primary text-primary rounded-lg cursor-pointer hoverAnimation" onClick={() => setShowEditModal(false)}>Cancel</Button>
+                <Button className="border border-gray-500 text-gray-500 rounded-lg cursor-pointer hoverAnimation4" onClick={() => setShowEditModal(false)}>Cancel</Button>
               </div>
             </div>
           </div>
@@ -402,27 +334,27 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
               <div className='text-sm'>
               <label className="block">
                 <span>Name:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.name} 
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.name} 
+                  onChange={(e) => setAddData({ ...addData, name: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>NIP:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.nip} 
-                  onChange={(e) => setFormData({ ...formData, nip: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.nip} 
+                  onChange={(e) => setAddData({ ...addData, nip: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>Status:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.status} 
+                  onChange={(e) => setAddData({ ...addData, status: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>specialization:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.specialization}
-                  onChange={(e) => setFormData({ ...formData, specialization: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.specialization}
+                  onChange={(e) => setAddData({ ...addData, specialization: e.target.value })} />
               </label>
               <div className="flex gap-2 mt-4 text-sm">
                 <Button className="border border-success text-success rounded-lg cursor-pointer hoverAnimation3" onClick={handleAddSubmit}>Add Teacher</Button>
-                <Button className="border border-primary text-primary rounded-lg cursor-pointer hoverAnimation" onClick={() => setShowAddModal(false)}>Cancel</Button>
+                <Button className="border border-gray-500 text-gray-500 rounded-lg cursor-pointer hoverAnimation4" onClick={() => setShowAddModal(false)}>Cancel</Button>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getData, deleteData, updateData, postData } from '@/api/axios';
 import Button from '@/components/Button';
 import SearchBox from '@/components/SearchBox';
+import PaginationButton from '@/components/PaginationButton';
 
 export default function ManageAccStudent({ endPointParams, ...props }) {
   const [posts, setPosts] = useState([]);
@@ -12,7 +13,9 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', nis: '', status: '', grade: '' });
+  const [searchData, setSearchData] = useState({ name: "", nis: "" });
+  const [addData, setAddData] = useState({ name: "", nis: "", grade: "", status:"" });
+  const [editData, setEditData] = useState({ name: "", nis: "", grade: "", status:"" });
   const [isAscending, setIsAscending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [grade, setGrade] = useState("");
@@ -37,40 +40,34 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
     fetchData();
   }, [currentPage, endPointParams]);
 
-  // handling filter
-  const handleFilter = async (selectedGrade) => {
+  // handling filter, sort, and search
+  const handleFetchData = async () => {
     try {
-      setGrade(selectedGrade);
-      const filterData = await getData(`${endPointParams}?grade=${selectedGrade}`);
-      setPosts(filterData.students || []);
-      setTotalPages(filterData?.meta?.totalPage || 1);
+      let queryParams = [];
+  
+      if (grade) {
+        queryParams.push(`grade=${parseInt(grade, 10)}`);
+      }
+  
+      if (searchData.name) {
+        queryParams.push(`search=${searchData.name}`);
+      }
+  
+      if (searchData.nip) {
+        queryParams.push(`searchNIS=${searchData.nis}`);
+      }
+  
+      if (typeof isAscending === 'boolean') {
+        queryParams.push(`sortByNIS=${isAscending}`);
+      }
+  
+      const finalEndpoint = `${endPointParams}?${queryParams.join('&')}`;
+      const data = await getData(finalEndpoint);
+      setPosts(data.students || []);
+      setTotalPages(data?.meta?.totalPage || 1);
     } catch (error) {
-      console.error("Failed to Filter Data", error);
-      alert("Failed to Filter Data");
-    }
-  };
-
-  // handling sort
-  const handleSort = async () => {
-    try {
-      const newSortOrder = !isAscending;
-      setIsAscending(newSortOrder);
-      const sortedData = await getData(`${endPointParams}?sortByNIS=${newSortOrder}`);
-      setPosts(sortedData.students || []);
-      setTotalPages(sortedData?.meta?.totalPage || 1);
-    } catch (error) {
-      console.error("Failed to Sort by NIS", error);
-    }
-  };
-
-  // handling search
-  const handleSearch = async () => {
-    try {
-      const searchedData = await getData(endPointParams + `?search=${formData.name}&searchNIS=${formData.nis}`);
-      setPosts(searchedData.students || []);
-      setTotalPages(searchedData?.meta?.totalPage || 1);
-    } catch (error) {
-      console.error("Failed to Search Student Accounts", error);
+      console.error("Failed to Fetch Data", error);
+      alert("Failed to Fetch Data");
     }
   };
   
@@ -89,12 +86,12 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
   // handling edit student
   const handleEditSubmit = async () => {
     const formattedData = {
-      ...formData,
-      grade: parseInt(formData.grade, 10), // convert grade ke integer
+      ...editData,
+      grade: parseInt(editData.grade, 10), // convert grade ke integer
     };
     try {
-      await updateData(endPointParams + `?id=${selectedStudent.id}`, formattedData, formData);
-      setPosts(posts.map(post => (post.id === selectedStudent.id ? { ...post, ...formData } : post)));
+      await updateData(endPointParams + `?id=${selectedStudent.id}`, formattedData, editData);
+      setPosts(posts.map(post => (post.id === selectedStudent.id ? { ...post, ...editData } : post)));
       setShowEditModal(false);
     } catch (error) {
       console.error("Failed to Updating Data:", error);
@@ -104,28 +101,36 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
   // handling tambah student
   const handleAddSubmit = async () => {
     const formattedData = {
-      ...formData,
-      grade: parseInt(formData.grade, 10), // convert grade ke integer
+      ...addData,
+      grade: parseInt(addData.grade, 10), // convert grade ke integer
     };
   
     try {
+      if (!addData.name || !addData.nis || !addData.status || !addData.grade) {
+        alert("Semua field harus diisi.");
+        return;
+      }
       const newStudent = await postData(endPointParams, formattedData);
       setPosts([...posts, newStudent]);
       setShowAddModal(false);
-      setFormData({ name: '', nis: '', status: '', grade: '' });
+      setAddData({ name: '', nis: '', status: '', grade: '' });
     } catch (error) {
       console.error("Error adding post:", error.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+    handleFetchData();
+  }, [grade, searchData.name, searchData.nis, isAscending]);
   
   return (
     <div className='ml-[22rem] mr-24 mt-16 mb-10'>
       <div className='flex justify-between items-end mb-6'>
         <div className='flex flex-col gap-2 min-w-md'>
           <h1 className="text-3xl font-bold">Student Accounts</h1>
-          <SearchBox
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            onSearch={handleSearch}
+          <SearchBox // Search Box
+            onChange={(e) => setSearchData({ ...searchData, name: e.target.value })}
+            onSearch={handleFetchData}
             placeHolder={placeHolderText}
           />
         </div>
@@ -153,7 +158,7 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
                     <li key={value}>
                       <button
                         onClick={() => {
-                          handleFilter(value);
+                          setGrade(value); 
                           setIsOpen(false);
                         }}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -169,7 +174,10 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
 
           {/* button sort */}
           <Button
-            onClick={handleSort}
+            onClick={() => {
+              setIsAscending(!isAscending)
+              handleFetchData();
+            }}
             className="flex items-center gap-2 border border-primary text-primary text-sm hoverAnimation"
           >
             Sort by NIS 
@@ -204,30 +212,30 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
         </div>
       </div>
       {/* main container tabelnya */}
-      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl">
-        <table className="min-w-full bg-white border border-gray-300 rounded-xl overflow-hidden text-sm">
+      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden text-sm">
           <thead>
-            <tr className="bg-primary text-white">
-              <th className="border-y px-4 py-2">Name</th>
-              <th className="border-y px-4 py-2">NIS</th>
-              <th className="border-y px-4 py-2">Status</th>
-              <th className="border-y px-4 py-2">Grade</th>
-              <th className='border-y px-4 py-2'>Action</th>
+            <tr>
+              <th className="border-y px-4 py-2 text-start border-gray-400">Name</th>
+              <th className="border-y px-4 py-2 text-start border-gray-400">NIS</th>
+              <th className="border-y px-4 py-2 text-start border-gray-400">Status</th>
+              <th className="border-y px-4 py-2 text-start border-gray-400">Grade</th>
+              <th className='border-y px-4 py-2 text-start border-gray-400'>Action</th>
             </tr>
           </thead>
           <tbody>
             {posts.map((post) => (
-              <tr key={post.id} className="text-center">
-                <td className="border-y px-4 py-2">{post.name}</td>
-                <td className="border-y px-4 py-2">{post.nis}</td>
-                <td className="border-y px-4 py-2">{post.status}</td>
-                <td className="border-y px-4 py-2">{post.grade}</td>
-                <td className="border-y px-4 py-2">
-                  <div className='flex justify-center items-center gap-4'> {/* button container */}
+              <tr key={post.id} className="text-start">
+                <td className="border-y px-4 py-2 border-gray-300 font-semibold">{post.name}</td>
+                <td className="border-y px-4 py-2 border-gray-300">{post.nis}</td>
+                <td className="border-y px-4 py-2 border-gray-300">{post.status}</td>
+                <td className="border-y px-4 py-2 border-gray-300">{post.grade}</td>
+                <td className="border-y px-4 py-2 border-gray-300">
+                  <div className='flex justify-start items-center gap-4'> {/* button container */}
                     {/* button edit */}
                     <button onClick={() => { 
                       setSelectedStudent(post); 
-                      setFormData(post); 
+                      setEditData(post); 
                       setShowEditModal(true); 
                     }}>
                       <svg
@@ -279,89 +287,11 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
         </table>
       </div>
 
-      {/* Pagination Button */}
-      <div className="flex gap-2 justify-center items-center mt-8">
-        {/* Tombol Previous */}
-        <button
-          className="p-2 cursor-pointer flex items-center justify-center rounded-full border border-gray-600 bg-white disabled:opacity-50 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="1em"
-            height="1em"
-            {...props}
-          >
-            <path
-              fill="currentColor"
-              d="M14.71 15.88L10.83 12l3.88-3.88a.996.996 0 1 0-1.41-1.41L8.71 11.3a.996.996 0 0 0 0 1.41l4.59 4.59c.39.39 1.02.39 1.41 0c.38-.39.39-1.03 0-1.42"
-            ></path>
-          </svg>
-        </button>
-
-        {/* Logic nampilin halaman */}
-        {totalPages > 5 && currentPage > 3 && (
-          <button
-            className="py-2 px-3.5 text-xs flex items-center justify-center rounded-full border border-gray-600 bg-white cursor-pointer duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"
-            onClick={() => setCurrentPage(1)}
-          >
-            1
-          </button>
-        )}
-        {totalPages > 5 && currentPage > 3 && <span className="text-gray-600">...</span>}
-
-        {Array.from({ length: totalPages }, (_, index) => index + 1)
-          .filter((page) => {
-            if (totalPages <= 5) return true; // Kalo halaman ≤ 5, nampilin semua
-            if (currentPage <= 3) return page <= 5; // kalo di halaman awal, nampilin 1-5
-            if (currentPage >= totalPages - 2) return page >= totalPages - 4; // kalo di akhir, nampilin 5 terakhir
-            return Math.abs(currentPage - page) <= 2; // nampilin halaman sekitar halaman aktif
-          })
-          .map((page) => (
-            <button
-              key={page}
-              className={`py-2 px-3.5 text-xs cursor-pointer flex items-center justify-center rounded-full border border-gray-600 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500 ${
-                currentPage === page ? "bg-sky-500 text-white border-sky-500" : "bg-white"
-              }`}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </button>
-          ))}
-
-        {totalPages > 5 && currentPage < totalPages - 2 && <span className="text-gray-600">...</span>}
-
-        {totalPages > 5 && currentPage < totalPages - 2 && (
-          <button
-            className="py-2 px-3.5 text-xs flex items-center justify-center rounded-full border border-gray-600 bg-white cursor-pointer duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"
-            onClick={() => setCurrentPage(totalPages)}
-          >
-            {totalPages}
-          </button>
-        )}
-
-        {/* Tombol Next */}
-        <button
-          className="p-2 cursor-pointer flex items-center justify-center rounded-full border border-gray-600 bg-white disabled:opacity-50 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="1em"
-            height="1em"
-            {...props}
-          >
-            <path
-              fill="currentColor"
-              d="M9.29 15.88L13.17 12L9.29 8.12a.996.996 0 1 1 1.41-1.41l4.59 4.59c.39.39.39 1.02 0 1.41L10.7 17.3a.996.996 0 0 1-1.41 0c-.38-.39-.39-1.03 0-1.42">
-            </path>
-          </svg>
-        </button>
-      </div>
+      <PaginationButton
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
       {/* modal confirm delete */}
       {showDeleteModal && (
@@ -371,7 +301,7 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
             <p className='text-gray-500'>r u sure u wanna delete {selectedStudent?.name}?</p>
             <div className="flex gap-2 mt-4 text-sm">
               <Button className="border border-danger text-danger rounded-lg cursor-pointer hoverAnimation2" onClick={handleDelete}>Yes</Button>
-              <Button className="border border-primary text-primary rounded-lg cursor-pointer hoverAnimation" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
+              <Button className="border border-gray-500 text-gray-500 rounded-lg cursor-pointer hoverAnimation4" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
             </div>
           </div>
         </div>
@@ -385,27 +315,27 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
             <div className='text-sm'>
               <label className="block">
                 <span>Name:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.name} 
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={editData.name} 
+                  onChange={(e) => setEditData({ ...editData, name: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>NIS:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.nis} 
-                  onChange={(e) => setFormData({ ...formData, nis: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={editData.nis} 
+                  onChange={(e) => setEditData({ ...editData, nis: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>Status:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={editData.status} 
+                  onChange={(e) => setEditData({ ...editData, status: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>Grade:</span>
-                <input type="number" name="grade" className="w-full p-2 border rounded-lg" value={formData.grade} step="0.01"
-                  onChange={(e) => setFormData({ ...formData, grade: e.target.value })} />
+                <input type="number" name="grade" className="w-full p-2 border rounded-lg" value={editData.grade} step="0.01"
+                  onChange={(e) => setEditData({ ...editData, grade: e.target.value })} />
               </label>
               <div className="flex gap-2 mt-4 text-sm">
                 <Button className="border border-success text-success rounded-lg cursor-pointer hoverAnimation3" onClick={handleEditSubmit}>Save</Button>
-                <Button className="border border-primary text-primary rounded-lg cursor-pointer hoverAnimation" onClick={() => setShowEditModal(false)}>Cancel</Button>
+                <Button className="border border-gray-500 text-gray-500 rounded-lg cursor-pointer hoverAnimation4" onClick={() => setShowEditModal(false)}>Cancel</Button>
               </div>
             </div>
           </div>
@@ -420,27 +350,27 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
               <div className='text-sm'>
               <label className="block">
                 <span>Name:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.name} 
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.name} 
+                  onChange={(e) => setAddData({ ...addData, name: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>NIS:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.nis} 
-                  onChange={(e) => setFormData({ ...formData, nis: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.nis} 
+                  onChange={(e) => setAddData({ ...addData, nis: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>Status:</span>
-                <input type="text" className="w-full p-2 border rounded-lg" value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })} />
+                <input type="text" className="w-full p-2 border rounded-lg" value={addData.status} 
+                  onChange={(e) => setAddData({ ...addData, status: e.target.value })} />
               </label>
               <label className="block mt-2">
                 <span>Grade:</span>
-                <input type="number" name="grade" className="w-full p-2 border rounded-lg" value={formData.grade} step="0.01"
-                  onChange={(e) => setFormData({ ...formData, grade: e.target.value })} />
+                <input type="number" name="grade" className="w-full p-2 border rounded-lg" value={addData.grade} step="0.01"
+                  onChange={(e) => setAddData({ ...addData, grade: e.target.value })} />
               </label>
               <div className="flex gap-2 mt-4 text-sm">
                 <Button className="border border-success text-success rounded-lg cursor-pointer hoverAnimation3" onClick={handleAddSubmit}>Add Student</Button>
-                <Button className="border border-primary text-primary rounded-lg cursor-pointer hoverAnimation" onClick={() => setShowAddModal(false)}>Cancel</Button>
+                <Button className="border border-gray-500 text-gray-500 rounded-lg cursor-pointer hoverAnimation4" onClick={() => setShowAddModal(false)}>Cancel</Button>
               </div>
             </div>
           </div>

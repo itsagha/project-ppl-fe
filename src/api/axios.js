@@ -67,4 +67,14 @@ export const deleteData = async (url) => {
   }
 };
 
+// DELETE request with body
+export const deleteDataWithBody = async (url, data) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.delete(url, {
+    headers: { Authorization: `Bearer ${token}` },
+    data,
+  });
+  return response.data;
+};
+
 export default api;

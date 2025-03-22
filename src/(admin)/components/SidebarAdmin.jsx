@@ -24,12 +24,12 @@ export default function SidebarAdmin(props) {
     // Main Container sidebar
     <div className='fixed top-0 left-0 h-screen shadow-2xl text-black bg-white p-6 flex flex-col justify-between overflow-y-auto'>
       {/* Welcoming text */}
-      <div className='flex justify-start text-lg font-bold gap-2 my-10'>
+      <div className='flex justify-start gap-2 my-10'>
         <img src="logoLg.png" alt="" className='w-7'/>
-        Learnify - Admin
+        <h1 className='text-xl font-bold'>Learnify - Admin</h1>
       </div>
       {/* garis item */}
-      <p className='h-0.5 w-full bg-primary rounded-full mb-10'></p>
+      <div className='h-0.5 w-full bg-primary rounded-full mb-10'></div>
 
       <ul className='flex-grow'>
         {/* button dashboard admin */}
@@ -85,13 +85,13 @@ export default function SidebarAdmin(props) {
             <ul className='ml-6 mt-2 text-gray-700 max-w-fit'>
               <span className='font-normal'>
                 <li className='hover:text-primary'>
-                  <Link to="/ManageClass">10th Grade</Link>
+                  <Link to="/ManageClass10">10th Grade</Link>
                 </li>
                 <li className='hover:text-primary'>
-                  <Link to="/kelas11">11th Grade</Link>
+                  <Link to="/ManageClass11">11th Grade</Link>
                 </li>
                 <li className='hover:text-primary'>
-                  <Link to="/kelas12">12th Grade</Link>
+                  <Link to="/ManageClass12">12th Grade</Link>
                 </li>
               </span>
             </ul>
