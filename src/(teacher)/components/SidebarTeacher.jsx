@@ -2,25 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function SidebarTeacher({ ...props }) {
-  const [teacherName, setTeacherName] = useState("");
+  const [showDropdownSubjects, setshowDropdownSubjects] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("userData");
-    console.log("Fetched userData from localStorage:", storedUserData);
-    
-    if (storedUserData) {
-        try {
-            const userData = JSON.parse(storedUserData);
-            console.log("Parsed userData:", userData);
-            setTeacherName(userData.display_name || "Guest");
-        } catch (error) {
-            console.error("Error parsing userData:", error);
-        }
-    } else {
-        console.warn("No user data found in localStorage.");
-    }
-  }, []);
+  const toggleDropdownSubjects = () => {
+    setshowDropdownSubjects(!showDropdownSubjects);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -41,7 +28,7 @@ export default function SidebarTeacher({ ...props }) {
 
       <ul className='flex-grow'>
         {/* button dashboard teacher */}
-        <li className='duration-500 ease-in-out hover:text-primary font-bold mb-4'>
+        <li className='duration-500 ease-in-out hover:text-primary mb-4'>
           <Link to="/DashboardTeacher" className='flex items-center'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,29 +47,57 @@ export default function SidebarTeacher({ ...props }) {
         </li>
 
         {/* Button manage subjects */}
-        <li className='duration-500 ease-in-out hover:text-primary font-bold mb-4'>
-          <Link to="/ManageSubjects" className='flex items-center'>
+        <li className='duration-500 ease-in-out hover:text-primary cursor-pointer mb-4 max-w-fit'>
+          <div className='flex items-center justify-start' onClick={toggleDropdownSubjects}>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 14 14"
+                width="1em"
+                height="1em"
+                {...props}
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12.5 13.54H3a1.5 1.5 0 0 1 0-3h8.5a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1H3A1.5 1.5 0 0 0 1.5 2v10m10-1.46v3">
+                </path>
+              </svg>
+            <span className='mx-2'>Manage Subjects</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 14 14"
+              viewBox="0 0 24 24"
               width="1em"
               height="1em"
-              {...props}
+              className={`transform duration-300 ${showDropdownSubjects ? "rotate-180" : ""}`}
             >
               <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12.5 13.54H3a1.5 1.5 0 0 1 0-3h8.5a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1H3A1.5 1.5 0 0 0 1.5 2v10m10-1.46v3">
-              </path>
+                fill="currentColor"
+                d="M12 15.172l4.95-4.95a1 1 0 0 1 1.414 1.414l-6 6a1 1 0 0 1-1.414 0l-6-6a1 1 0 0 1 1.414-1.414z"
+              />
             </svg>
-            <span className='ml-2'>Manage Subjects</span>
-          </Link>
+          </div>
+
+          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showDropdownSubjects ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <ul className='ml-6 mt-2 text-gray-700 max-w-fit'>
+              <span className='font-normal'>
+                <li className='hover:text-primary'>
+                  <Link to="/ManageSubjects">10th Grade</Link>
+                </li>
+                <li className='hover:text-primary'>
+                  <Link to="/ManageSubjects11">11th Grade</Link>
+                </li>
+                <li className='hover:text-primary'>
+                  <Link to="/ManageSubjects12">12th Grade</Link>
+                </li>
+              </span>
+            </ul>
+          </div>
         </li>
 
         {/* Button manage task & exam */}
-        <li className='duration-500 ease-in-out hover:text-primary font-bold mb-4'>
+        <li className='duration-500 ease-in-out hover:text-primary mb-4'>
           <Link to="/ManageTasksExam" className='flex items-center'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +123,7 @@ export default function SidebarTeacher({ ...props }) {
 
       {/* Button Logout */}
       <div 
-        className='flex items-center justify-start gap-2 duration-500 ease-in-out hover:text-danger font-bold max-w-fit mb-20 cursor-pointer' 
+        className='flex items-center justify-start gap-2 duration-500 ease-in-out hover:text-danger max-w-fit mb-20 cursor-pointer' 
         onClick={handleLogout}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

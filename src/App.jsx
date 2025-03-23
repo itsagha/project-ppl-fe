@@ -17,6 +17,7 @@ import ManageAccStudent from "./(admin)/pages/ManageAccStudent";
 import SidebarTeacher from "./(teacher)/components/SidebarTeacher";
 import ManageAccTeacher from "./(admin)/pages/ManageAccTeacher";
 import ManageSubjects from "./(teacher)/pages/ManageSubjects";
+import CreateSubjects from "./(teacher)/pages/CreateSubjects";
 
 const App = () => {
   const location = useLocation();
@@ -29,7 +30,7 @@ const App = () => {
   location.pathname === "/ManageAccStudent" ||
   location.pathname === "/ManageAccTeacher";
 
-  const isTeacherPage = location.pathname === "/DashboardTeacher";
+  const isTeacherPage = location.pathname === "/DashboardTeacher" || location.pathname === "/ManageSubjects" || location.pathname === "/CreateSubjects";
   const isStudentPage = location.pathname === "/StudentPage";
   const endPointTest = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_PING_URL;
   const endPointUsers = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_USERS_URL;
@@ -55,6 +56,8 @@ const App = () => {
         <Route path="/StudentPage" element={<StudentPage />} />
         <Route path="/ManageAccStudent" element={<ManageAccStudent endPointParams={endPointStudents} />} />
         <Route path="/ManageAccTeacher" element={<ManageAccTeacher endPointParams={endPointTeachers} />} />
+        <Route path="/ManageSubjects" element={<ManageSubjects />} />
+        <Route path="/CreateSubjects" element={<CreateSubjects />} />
       </Routes>
     </>
   );

@@ -150,7 +150,7 @@ export default function ManageClass({ endPointParams, grade, ...props }) {
         {posts.map((post) => (
             <div key={post.id} className="shadow-2xl rounded-2xl p-6 bg-cyan-500 text-white flex flex-col gap-1.5">
               <div className='flex justify-between'>
-                <h2 className="text-lg font-bold hover:scale-103 duration-500 ease-in-out cursor-pointer">{post.name}</h2>
+                <h2 className="text-lg font-bold">{post.name}</h2>
                 {/* Dropdown delete & edit */}
                 <SimpleDropdown
                   fields={[
