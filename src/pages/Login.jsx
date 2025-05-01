@@ -27,15 +27,15 @@ export default function Login(props) {
         } else if (decoded.role === "teacher") {
           window.location.href = "/DashboardTeacher";
         } else {
-          window.location.href = "/StudentPage";
+          window.location.href = "/DashboardStudent";
         }
       }
     } catch (error) {
       console.error("POST Error:", error);
       if (error.response) {
-        setErrorMessage(error.response.data.message || "Login gagal, Periksa kembali NIP/NIS dan Password anda.");
+        setErrorMessage(error.response.data.message || "Login failed, check your NIP/NIS and password.");
       } else {
-        setErrorMessage("Terjadi kesalahan, Coba lagi nanti.");
+        setErrorMessage("Something went wrong, try again later.");
       }
     }
   };
@@ -55,18 +55,18 @@ export default function Login(props) {
       <div className="w-1/2 flex flex-col justify-center items-center mb-10">
         <img src="logo_title.png" alt="" className='max-w-40'/>
         <form className="w-4/5 max-w-sm mt-10" onSubmit={handleSubmit(handlePressSubmit)}>
-          <h2 className="text-center text-3xl font-bold mb-2">Prepare For Your SNBT With Learnify!</h2>
+          <h2 className="text-center text-3xl font-bold mb-2">Grow your understanding on Learnify!</h2>
           <p className="text-sm text-gray-400 w-96 text-justify mb-10">
-            To keep connected with us, please login with your personal information by NIS and password.
+            To keep connected with us, please login with your personal information by NIP/NIS and password.
           </p>
 
           {/* Input NIS */}
           <div className='mb-4 relative'>
             <input
               type="text"
-              placeholder="NIS"
+              placeholder="NIP/NIS"
               {...register("username", { required: true })}
-              className="w-full p-2 border border-gray-300 rounded-xl placeholder:text-sm"
+              className="w-full p-2 border border-gray-300 rounded-xl placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
@@ -76,7 +76,7 @@ export default function Login(props) {
               type={showPassword ? 'text' : 'password'}
               placeholder="Password"
               {...register('password')}
-              className="w-full p-2 border border-gray-300 rounded-xl placeholder:text-sm"
+              className="w-full p-2 border border-gray-300 rounded-xl placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
             <div

@@ -21,16 +21,10 @@ export default function DashboardAdmin(props) {
     // Main Container
     <div className="ml-[20rem] mr-20">
       {/* Title Page yang ada di atas */}
-      <div 
-        className=" my-16 rounded-2xl py-16 px-10 flex justify-between relative overflow-hidden"
-        style={{
-          backgroundImage: 'url(/images/login/background.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center'
-        }}
-      > 
-        {/* Overlay warna item */}
-        <div className="absolute inset-0 bg-black opacity-25"></div>
+      <div
+        className="my-16 rounded-2xl py-16 px-10"
+        style={{ background: 'linear-gradient(to right, #0077B3, #73C2FB)' }}
+      >
         {/* Tulisan Dashboard */}
         <span className="relative text-3xl font-bold text-white flex justify-start gap-2">
           <svg
@@ -47,27 +41,6 @@ export default function DashboardAdmin(props) {
           </svg>
             Dashboard
         </span>
-
-        {/* Tulisan Admin */}
-        <div className="relative  text-white flex justify-start items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 48 48"
-            width="1.15em"
-            height="1.15em"
-            {...props}
-          >
-            <path
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="4"
-              d="M24 20a7 7 0 1 0 0-14a7 7 0 0 0 0 14M6 40.8V42h36v-1.2c0-4.48 0-6.72-.872-8.432a8 8 0 0 0-3.496-3.496C35.92 28 33.68 28 29.2 28H18.8c-4.48 0-6.72 0-8.432.872a8 8 0 0 0-3.496 3.496C6 34.08 6 36.32 6 40.8">
-            </path>
-          </svg>
-            Admin 1
-        </div>
       </div>
 
       {/* search box */}

@@ -11,7 +11,7 @@ export default function SidebarTeacher({ ...props }) {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    alert("Anda Telah Logout");
+    alert("Succesfully logout");
     navigate('/');
   }
 
@@ -28,7 +28,7 @@ export default function SidebarTeacher({ ...props }) {
 
       <ul className='flex-grow'>
         {/* button dashboard teacher */}
-        <li className='duration-500 ease-in-out hover:text-primary mb-4'>
+        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-2 rounded-lg ${location.pathname === '/DashboardTeacher' ? 'text-white bg-primary rounded-lg' : ''}`}>
           <Link to="/DashboardTeacher" className='flex items-center'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +47,7 @@ export default function SidebarTeacher({ ...props }) {
         </li>
 
         {/* Button manage subjects */}
-        <li className='duration-500 ease-in-out hover:text-primary cursor-pointer mb-4 max-w-fit'>
+        <li className='px-2 py-1.5 cursor-pointer mb-2 max-w-fit'>
           <div className='flex items-center justify-start' onClick={toggleDropdownSubjects}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -82,13 +82,13 @@ export default function SidebarTeacher({ ...props }) {
           <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showDropdownSubjects ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
             <ul className='ml-6 mt-2 text-gray-700 max-w-fit'>
               <span className='font-normal'>
-                <li className='hover:text-primary'>
-                  <Link to="/ManageSubjects">10th Grade</Link>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageSubjects10' ? 'text-white bg-primary rounded-lg' : ''}`}>
+                  <Link to="/ManageSubjects10">10th Grade</Link>
                 </li>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageSubjects11' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageSubjects11">11th Grade</Link>
                 </li>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageSubjects12' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageSubjects12">12th Grade</Link>
                 </li>
               </span>
@@ -97,8 +97,8 @@ export default function SidebarTeacher({ ...props }) {
         </li>
 
         {/* Button manage task & exam */}
-        <li className='duration-500 ease-in-out hover:text-primary mb-4'>
-          <Link to="/ManageTasksExam" className='flex items-center'>
+        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-2 rounded-lg ${location.pathname === '/ManageTaskExam' ? 'text-white bg-primary rounded-lg' : ''}`}>
+          <Link to="/ManageTaskExam" className='flex items-center'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

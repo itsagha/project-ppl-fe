@@ -16,7 +16,7 @@ const Dropdown = ({ className, fields, buttonLabel, buttonContent, onSelect, ...
   };
 
   return (
-    <div className={`relative inline-block w-full`}>
+    <div className={`relative inline-block`}>
       <Button 
         onClick={() => setIsOpen(!isOpen)} 
         className={`flex justify-between items-center border border-primary text-primary hoverAnimation rounded-lg ${className}`}

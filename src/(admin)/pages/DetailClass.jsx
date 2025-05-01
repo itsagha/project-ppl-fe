@@ -55,21 +55,37 @@ export default function DetailClass({ endPointParams, ...props }) {
     }
   };
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await getData(endPointStudents);
-        setStudentList(response.students || []);
-      } catch (error) {
-        console.error("Failed to fetch students:", error);
-      }
-    }
-  })
-
   // handle general
   const handleFetchData = async () => {
-    console.log("test")
-  }
+    try {
+      let queryParams = [];
+  
+      if (searchData.name) {
+        queryParams.push(`search=${searchData.name}`);
+      }
+  
+      if (searchData.nis) {
+        queryParams.push(`searchNIS=${searchData.nis}`);
+      }
+  
+      if (typeof isAscending === 'boolean') {
+        queryParams.push(`sortByNIS=${isAscending}`);
+      }
+
+      if (id) {
+        queryParams.push(`id=${id}`);
+      }
+
+  
+      const finalEndpoint = `${endPointStudents}?${queryParams.join('&')}`;
+      const data = await getData(finalEndpoint);
+      setStudents(data.students || []);
+      setTotalPages(data?.meta?.totalPage || 1);
+    } catch (error) {
+      console.error("Failed to Fetch Data", error);
+      alert("Failed to Fetch Data");
+    }
+  };
 
   //handle unassign student
   const handleUnassign = async () => {
@@ -94,7 +110,7 @@ export default function DetailClass({ endPointParams, ...props }) {
       return;
     }
   
-    // Cek kalau ada murid yang sudah ada
+    // Cek kalo ada murid yang udah kedaftar
     const existingStudents = addData.student_ids.filter((id) =>
       students.some((s) => s.id === id)
     );
@@ -123,6 +139,10 @@ export default function DetailClass({ endPointParams, ...props }) {
     fetchClassDetails();
     fetchAllStudents();
   }, [id, currentPage]);
+
+  useEffect(() => {
+    handleFetchData();
+  }, [searchData.name, searchData.nis, isAscending]);
 
   return (
     <div className='ml-[22rem] mr-24 mt-16'>
@@ -176,7 +196,7 @@ export default function DetailClass({ endPointParams, ...props }) {
       </div>
 
       {/* Table Students */}
-      <div className='overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary'>
+      <div className='overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary mb-8'>
         <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden text-sm">
           <thead>
             <tr className="border-b">
@@ -247,7 +267,7 @@ export default function DetailClass({ endPointParams, ...props }) {
             }
           ]}
           children="Assign"
-          className="border-success text-success hoverAnimation3"
+          className="border-success text-success hoverAnimation3 max-w-96"
           onSubmit={handleAssign}
           onClose={() => setShowAddModal(false)}
         />

@@ -16,9 +16,10 @@ export default function DashboardTeacher(props) {
         try {
             const userData = JSON.parse(storedUserData);
             console.log("Parsed userData:", userData);
-            setTeacherName(userData.display_name || "Guest");
+            setTeacherName(userData.display_name || "Teacher");
+            console.log(userData)
         } catch (error) {
-            console.error("Error parsing userData:", error);
+            console.error("Error parsing Teacher Data:", error);
         }
     } else {
         console.warn("No user data found in localStorage.");
@@ -30,15 +31,11 @@ export default function DashboardTeacher(props) {
     <div className='ml-[22rem] mr-24 my-16'>
       {/* Title Page */}
       <div
-        className=" my-16 rounded-2xl py-16 px-10 flex justify-between relative overflow-hidden"
-        style={{
-          backgroundImage: 'url(/images/login/background.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center'
-        }}
+        className="my-16 rounded-2xl py-16 px-10"
+        style={{ background: 'linear-gradient(to right, #0077B3, #73C2FB)' }}
       >
         {/* overlay warna item */}
-        <div className="absolute inset-0 bg-black opacity-25"></div>
+        {/* <div className="absolute inset-0 bg-black opacity-25"></div> */}
         {/* tulisan dashboard */}
         <span className="relative text-3xl font-bold text-white flex justify-start gap-2">
           <svg
@@ -56,7 +53,7 @@ export default function DashboardTeacher(props) {
             Dashboard
         </span>
       </div>
-      <div className='bg-gradient-to-r from-primary to-cyan-500 w-fit px-10 py-2 rounded-xl shadow-2xl'> {/* container welcoming text */}
+      <div className='bg-primary w-fit px-10 py-2 rounded-xl shadow-2xl'> {/* container welcoming text */}
         <h1 className='text-white'>Welcome again, {teacherName}!</h1>
       </div>
       <div className='flex justify-between mt-6 mb-12 gap-10'> {/* Main Container avg class & Submission Progress*/}

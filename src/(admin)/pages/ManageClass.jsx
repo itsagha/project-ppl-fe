@@ -318,7 +318,7 @@ export default function ManageClass({ endPointParams, grade, ...props }) {
               ),
             },
           ]}
-          children="Save"
+          children="Save Changes"
           className="border-success text-success hoverAnimation3"
           onSubmit={handleEditClass}
           onClose={() => setShowEditModal(false)}

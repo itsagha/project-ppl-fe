@@ -6,6 +6,18 @@ html {
   scroll-behavior: smooth;
 }
 
+.prose [style*="text-align: center"] {
+  text-align: center;
+}
+
+.prose [style*="text-align: right"] {
+  text-align: right;
+}
+
+.prose [style*="font-family"] {
+  font-family: inherit;
+}
+
 @theme {
   --color-primary: #0077B3;
   --color-secondary: #A3D1E0;
@@ -73,6 +85,26 @@ body {
   transform: scale(1.02);
   background-color: #6a7282;
   color: white;
+}
+
+/* Animasi hover underline */
+.underline-hover {
+  @apply relative p-1 text-[#303030];
+}
+
+.underline-hover::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #0077B3;
+  transition: width 0.3s ease;
+}
+
+.underline-hover:hover::after {
+  width: 100%;
 }
 
 input[type=number]::-webkit-inner-spin-button, 

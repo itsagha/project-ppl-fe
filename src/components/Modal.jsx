@@ -19,7 +19,7 @@ const Modal = ({ title, fields, onSubmit, onClose, children, className }) => {
                   type={field.type || 'text'}
                   value={field.value}
                   onChange={field.onChange}
-                  className='w-full p-2 border rounded-lg focus:outline-primary'
+                  className='w-full p-2 border border-gray-400 rounded-lg focus:outline-primary'
                 />
               )}
             </div>
@@ -34,7 +34,7 @@ const Modal = ({ title, fields, onSubmit, onClose, children, className }) => {
           </Button>
           <Button
             onClick={onClose}
-            className='border border-gray-700 text-gray-700 hoverAnimation4'
+            className='border border-gray-400 text-gray-700 hoverAnimation4'
           >
             Cancel
           </Button>

@@ -53,7 +53,7 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
         queryParams.push(`search=${searchData.name}`);
       }
   
-      if (searchData.nip) {
+      if (searchData.nis) {
         queryParams.push(`searchNIS=${searchData.nis}`);
       }
   
@@ -212,7 +212,7 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
         </div>
       </div>
       {/* main container tabelnya */}
-      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary">
+      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary mb-8">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden text-sm">
           <thead>
             <tr>

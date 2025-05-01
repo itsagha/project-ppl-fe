@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/Button';
 
-export default function ReportedMessage({ isMessageReported=true }) {
+export default function ReportedMessage({ isMessageReported=false }) {
   const handleDelete = () => {
     console.log("Deleted Report Messages");
     // logic delete message report disini
@@ -11,8 +11,8 @@ export default function ReportedMessage({ isMessageReported=true }) {
     { name: 'mas rusdi', message: 'atmin kontol' },
     { name: 'slamet galer', message: 'cukimai' },
     { name: 'azril', message: 'tes kalo report messagenya panjang bgt kek kontol gw lorem ipsum dolor sit amet' },
-    { name: 'agung 99', message: 'ngentot' },
-    { name: 'farhan kebab', message: 'telaso' }
+    { name: 'agung 99', message: 'Test' },
+    { name: 'farhan kebab', message: 'Test2' }
   ];
 
   if (isMessageReported) {

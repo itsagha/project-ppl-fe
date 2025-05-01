@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PaginationButton({ currentPage, totalPages, onPageChange }) {
   return (
-    <div className="flex gap-2 justify-center items-center mt-8">
+    <div className="flex gap-2 justify-center items-center">
       {/* Tombol Previous */}
       <button
         className="p-2 cursor-pointer flex items-center justify-center rounded-full border border-gray-600 bg-white disabled:opacity-50 duration-500 ease-in-out hover:bg-sky-500 hover:text-white hover:border-sky-500"

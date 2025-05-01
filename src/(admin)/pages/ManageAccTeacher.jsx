@@ -137,7 +137,7 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
             {isOpen && (
               <div className="absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-md">
                 <ul className="py-2 text-sm text-gray-700">
-                  {["Geografi", "Biologi", "Matematika", "Sosiologi", "Fisika", "Kimia", "Sejarah", "IT"].map((specializationOption) => (
+                  {["History", "Biology", "Mathematics", "Art & Culture", "Physics", "Chemistry", "English", "Civics", "Social Science", "Physical Education", "Religion"].map((specializationOption) => (
                     <li key={specializationOption}>
                       <button
                         onClick={() => {
@@ -196,7 +196,7 @@ export default function ManageAccStudent({ endPointParams, ...props }) {
         </div>
       </div>
       {/* main container tabelnya */}
-      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary">
+      <div className="overflow-x-auto p-10 rounded-2xl shadow-xl border border-secondary mb-8">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden text-sm">
           <thead>
             <tr>

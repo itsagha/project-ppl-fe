@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export default function SidebarAdmin(props) {
   const [showDropdownClass, setShowDropdownClass] = useState(false);
   const [showDropdownAccount, setShowDropdownAccount] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const handleLogout = () => {
     localStorage.removeItem("token");
     alert("Anda Telah Logout");
@@ -33,7 +34,7 @@ export default function SidebarAdmin(props) {
 
       <ul className='flex-grow'>
         {/* button dashboard admin */}
-        <li className='duration-500 ease-in-out hover:text-primary mb-4'>
+        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-2 rounded-lg ${location.pathname === '/DashboardAdmin' ? 'text-white bg-primary rounded-lg' : ''}`}>
           <Link to="/DashboardAdmin" className='flex items-center'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,8 +53,8 @@ export default function SidebarAdmin(props) {
         </li>
 
         {/* button dropdown manage class */}
-        <li className='duration-500 ease-in-out hover:text-primary cursor-pointer mb-4 max-w-fit'>
-          <div className='flex items-center justify-start' onClick={toggleDropdownClass}>
+        <li className='cursor-pointer mb-2 max-w-fit'>
+          <div className='px-2 py-1.5 flex items-center justify-start' onClick={toggleDropdownClass}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -84,13 +85,13 @@ export default function SidebarAdmin(props) {
           <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showDropdownClass ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
             <ul className='ml-6 mt-2 text-gray-700 max-w-fit'>
               <span className='font-normal'>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageClass10' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageClass10">10th Grade</Link>
                 </li>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageClass11' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageClass11">11th Grade</Link>
                 </li>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageClass12' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageClass12">12th Grade</Link>
                 </li>
               </span>
@@ -100,8 +101,8 @@ export default function SidebarAdmin(props) {
 
 
         {/* button dropdown manage account */}
-        <li className='duration-500 ease-in-out hover:text-primary cursor-pointer max-w-fit mb-4'>
-          <div className='flex items-center justify-start' onClick={toggleDropdownAccount}>
+        <li className='cursor-pointer max-w-fit mb-2'>
+          <div className='px-2 py-1.5 flex items-center justify-start' onClick={toggleDropdownAccount}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -136,10 +137,10 @@ export default function SidebarAdmin(props) {
           <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showDropdownAccount ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
             <ul className='ml-6 mt-2 text-gray-700 max-w-fit'>
               <span className='font-normal'>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageAccStudent' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageAccStudent">Student Accounts</Link>
                 </li>
-                <li className='hover:text-primary'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/ManageAccTeacher' ? 'text-white bg-primary rounded-lg' : ''}`}>
                   <Link to="/ManageAccTeacher">Teacher Accounts</Link>
                 </li>
               </span>
