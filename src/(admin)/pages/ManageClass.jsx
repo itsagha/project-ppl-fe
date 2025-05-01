@@ -3,7 +3,7 @@ import { deleteData, getData, postData, updateData } from '@/api/axios';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
-import Dropdown from '@/components/dropdown';
+import Dropdown from '@/components/Dropdown';
 import SimpleDropdown from '@/components/SimpleDropdown';
 import PaginationButton from '@/components/PaginationButton';
 
