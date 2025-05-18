@@ -31,6 +31,7 @@ export default function GroupDiscussions({ endPointParams, props }) {
       try {
         const userData = JSON.parse(storedUserData);
         setStudentID(userData.student_id);
+        console.log(userData);
         setStudentName(userData.display_name);
       } catch (error) {
         console.error("Error parsing User Data", error);
@@ -42,7 +43,28 @@ export default function GroupDiscussions({ endPointParams, props }) {
   const fetchGroupDiscuss = async () => {
     try {
       const response = await getData(endPointParams, currentPage);
-      setPosts(response.discussions || []);
+      const discussions = response.discussions || [];
+  
+      // ambil nama murid dari student_id
+      const enrichedDiscussions = await Promise.all(
+        discussions.map(async (discussion) => {
+          try {
+            const studentDetail = await getData(`https://api.learnify-ppl.site/api/v1/students/details?id=${discussion.student_id}`);
+            return {
+              ...discussion,
+              student_name: studentDetail.name, // ambil nama muridnya
+            };
+          } catch (error) {
+            console.error(`Gagal fetch student ID ${discussion.student_id}`, error);
+            return {
+              ...discussion,
+              student_name: "Unknown Student",
+            };
+          }
+        })
+      );
+  
+      setPosts(enrichedDiscussions);
       setTotalPages(response?.meta?.totalPage || 1);
     } catch (error) {
       console.error("Failed to fetch group discussions", error);
@@ -143,7 +165,10 @@ export default function GroupDiscussions({ endPointParams, props }) {
         {posts.map((post) => (
           <div key={post.id} className='shadow-lg rounded-2xl p-6 text-black border border-primary w-full mb-6'>
             <div className='flex justify-between'>
-              <h2 className='text-lg font-bold'>{post.topic}</h2>
+              <div className='flex flex-col'>
+                <h2 className='text-lg'>{post.student_name}</h2>
+                <h2 className='font-bold'>{post.topic}</h2>
+              </div>
               {post.student_id === studentID && (
                 <SimpleDropdown 
                   fields={[

@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/Button';
 
-export default function ReportedMessage({ isMessageReported=false }) {
+export default function ReportedMessage({ isMessageReported=true }) {
   const handleDelete = () => {
     console.log("Deleted Report Messages");
     // logic delete message report disini
