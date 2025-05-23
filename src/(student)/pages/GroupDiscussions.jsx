@@ -31,7 +31,6 @@ export default function GroupDiscussions({ endPointParams, props }) {
       try {
         const userData = JSON.parse(storedUserData);
         setStudentID(userData.student_id);
-        console.log(userData);
         setStudentName(userData.display_name);
       } catch (error) {
         console.error("Error parsing User Data", error);
@@ -96,7 +95,6 @@ export default function GroupDiscussions({ endPointParams, props }) {
           {
             topic: editData.topic,
             description: editData.description,
-            replies: null,
             student_id: studentID,
           });
       setShowEditModal(false);
@@ -166,8 +164,28 @@ export default function GroupDiscussions({ endPointParams, props }) {
           <div key={post.id} className='shadow-lg rounded-2xl p-6 text-black border border-primary w-full mb-6'>
             <div className='flex justify-between'>
               <div className='flex flex-col'>
-                <h2 className='text-lg'>{post.student_name}</h2>
-                <h2 className='font-bold'>{post.topic}</h2>
+                <div className='flex justify-start gap-2 items-center'>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 14 14"
+                    width="1em"
+                    height="1em"
+                    {...props}
+                  >
+                    <g
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="7" cy="5.5" r="2.5"></circle>
+                      <path d="M2.73 11.9a5 5 0 0 1 8.54 0"></path>
+                      <circle cx="7" cy="7" r="6.5"></circle>
+                    </g>
+                  </svg>
+                  <h2>{post.student_name}</h2>
+                </div>
+                <h2 className="text-lg font-bold">{post.topic}</h2>
               </div>
               {post.student_id === studentID && (
                 <SimpleDropdown 

@@ -17,7 +17,6 @@ export default function DashboardTeacher(props) {
             const userData = JSON.parse(storedUserData);
             console.log("Parsed userData:", userData);
             setTeacherName(userData.display_name || "Teacher");
-            console.log(userData)
         } catch (error) {
             console.error("Error parsing Teacher Data:", error);
         }

@@ -26,7 +26,7 @@ export default function SidebarAdmin(props) {
     <div className='fixed top-0 left-0 h-screen shadow-2xl text-black bg-white p-6 flex flex-col justify-between overflow-y-auto'>
       {/* Welcoming text */}
       <div className='flex justify-start gap-2 my-10'>
-        <img src="logoLg.png" alt="" className='w-7'/>
+        <img src="/logoLg.png" alt="" className='w-7'/>
         <h1 className='text-xl font-bold'>Learnify - Admin</h1>
       </div>
       {/* garis item */}

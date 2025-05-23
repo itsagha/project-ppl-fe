@@ -4,7 +4,7 @@ import SimpleDropdown from '@/components/SimpleDropdown';
 import PaginationButton from '@/components/PaginationButton';
 import Modal from '@/components/Modal';
 import { Link, useNavigate } from 'react-router-dom';
-import { getData, deleteData, updateData } from '@/api/axios';
+import { getData, deleteData } from '@/api/axios';
 
 export default function ManageSubjects({ endPointParams, grade, props }) {
   const endPointClasses = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CLASSES_URL;

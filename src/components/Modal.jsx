@@ -15,7 +15,7 @@ const Modal = ({ title, fields, onSubmit, onClose, children, className }) => {
               {field.customComponent ? (
                 field.customComponent 
               ) : (
-                <input
+                <textarea
                   type={field.type || 'text'}
                   value={field.value}
                   onChange={field.onChange}

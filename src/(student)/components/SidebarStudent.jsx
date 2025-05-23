@@ -15,7 +15,7 @@ export default function SidebarStudent({props}) {
     <div className='fixed top-0 left-0 h-screen shadow-2xl text-black bg-white p-6 flex flex-col justify-between overflow-y-auto'>
       {/* Welcoming text */}
       <div className='flex justify-start text-xl font-bold gap-2 my-10'>
-        <img src="logoLg.png" alt="" className='w-7'/>
+        <img src="/logoLg.png" alt="Logo" className='w-7'/>
         Learnify - Student
       </div>
       {/* garis biru */}
@@ -42,8 +42,8 @@ export default function SidebarStudent({props}) {
         </li>
 
         {/* Button my subjects */}
-        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-4 rounded-lg ${location.pathname === '/MySubjects' ? 'text-white bg-primary rounded-lg' : ''}`}>
-          <Link to="/MySubjects" className="flex items-center">
+        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-4 rounded-lg ${location.pathname === '/MyClasses' || location.pathname === '/MyDetailClasses' ? 'text-white bg-primary rounded-lg' : ''}`}>
+          <Link to="/MyClasses" className="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -61,7 +61,7 @@ export default function SidebarStudent({props}) {
                 <path d="M2 16V4a2 2 0 0 1 2-2h11"></path><path d="M22 18H11a2 2 0 1 0 0 4h10.5a.5.5 0 0 0 .5-.5v-15a.5.5 0 0 0-.5-.5H11a2 2 0 0 0-2 2v12m-4-6H4a2 2 0 1 0 0 4h1"></path>
               </g>
             </svg>
-            <span className='ml-2'>My Subjects</span>
+            <span className='ml-2'>Classes</span>
           </Link>
         </li>
 
@@ -83,7 +83,7 @@ export default function SidebarStudent({props}) {
                 </path>
               </g>
             </svg>
-            <span className='ml-2'>My Tasks & Exams</span>
+            <span className='ml-2'>Tasks & Exams</span>
           </Link>
         </li>
 

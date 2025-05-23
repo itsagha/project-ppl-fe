@@ -15,7 +15,6 @@ import DashboardStudent from "./(student)/pages/DashboardStudent";
 import ManageAccStudent from "./(admin)/pages/ManageAccStudent";
 import SidebarTeacher from "./(teacher)/components/SidebarTeacher";
 import ManageAccTeacher from "./(admin)/pages/ManageAccTeacher";
-import ManageSubjects from "./(teacher)/pages/ManageSubjects";
 import CreateSubjects from "./(teacher)/pages/CreateSubjects";
 import ManageTaskExam from "./(teacher)/pages/ManageTaskExam";
 import ManageSubjects10 from "./(teacher)/pages/ManageSubjects10";
@@ -28,9 +27,11 @@ import EditSubjects from "./(teacher)/pages/EditSubjects";
 import DetailSubjects from "./(teacher)/pages/DetailSubjects";
 import SidebarStudent from "./(student)/components/SidebarStudent";
 import MyTaskExam from "./(student)/pages/MyTaskExam";
-import MySubjects from "./(student)/pages/MySubjects";
+import MyClasses from "./(student)/pages/MyClasses";
 import GroupDiscussions from "./(student)/pages/GroupDiscussions";
 import CreateDiscussions from "./(student)/pages/CreateDiscussions";
+import MyDetailClasses from "./(student)/pages/MyDetailClasses";
+import MyDetailSubject from "./(student)/pages/MyDetailSubject";
 
 const App = () => {
   const location = useLocation();
@@ -57,10 +58,12 @@ const App = () => {
 
   const isStudentPage = [
     "/DashboardStudent",
-    "/MySubjects",
+    "/MyClasses",
     "/MyTaskExam",
     "/GroupDiscussions",
     "/CreateDiscussions",
+    "/MyDetailClasses",
+    "/MyDetailSubject",
   ].some(path => location.pathname.startsWith(path));
   
   const endPointTest = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_PING_URL;
@@ -99,10 +102,12 @@ const App = () => {
         <Route path="/DetailSubjects" element={<DetailSubjects endPointParams={endPointMaterials}/>} />
         <Route path="/ManageTaskExam" element={<ManageTaskExam />} />
         <Route path="/DashboardStudent" element={<DashboardStudent />}/>
-        <Route path="/MySubjects" element={<MySubjects />}/>
+        <Route path="/MyClasses" element={<MyClasses endPointParams={endPointClasses} />}/>
         <Route path="/MyTaskExam" element={<MyTaskExam />}/>
         <Route path="/GroupDiscussions" element={<GroupDiscussions endPointParams={endPointDiscussions}/>} />
         <Route path="/CreateDiscussions" element={<CreateDiscussions endPointParams={endPointDiscussions}/>} />
+        <Route path="/MyDetailClasses/:id" element={<MyDetailClasses endPointParams={endPointMaterials} />}/>
+        <Route path="/MyDetailSubject/:id" element={<MyDetailSubject endPointParams={endPointMaterials} />}/>
       </Routes>
     </>
   );
