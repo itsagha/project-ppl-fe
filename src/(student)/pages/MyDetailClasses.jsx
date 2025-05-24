@@ -1,6 +1,6 @@
 import { getData } from '@/api/axios';
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import PaginationButton from '@/components/PaginationButton';
 
 export default function MyDetailClasses({ endPointParams, props }) {

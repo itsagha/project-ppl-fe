@@ -23,6 +23,7 @@ export default function GroupDiscussions({ endPointParams, props }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [newReply, setNewReply] = useState("");
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [error, setError] = useState("");
 
   // dapetin student id sama nama student
   useEffect(() =>{
@@ -67,6 +68,7 @@ export default function GroupDiscussions({ endPointParams, props }) {
       setTotalPages(response?.meta?.totalPage || 1);
     } catch (error) {
       console.error("Failed to fetch group discussions", error);
+      setError("Error fetching group discussions, please try again later.");
     }
   };
 
@@ -147,6 +149,8 @@ export default function GroupDiscussions({ endPointParams, props }) {
     fetchGroupDiscuss();
   }, [currentPage, endPointParams]);
 
+  if (error) return <p className="text-red-500 ml-[22rem] mr-24 my-16">{error}</p>;
+  
   return (
     <div className='ml-[22rem] mr-24 my-16'>
       <div className='flex justify-between'>

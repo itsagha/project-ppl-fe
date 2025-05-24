@@ -9,6 +9,7 @@ export default function MyClasses({ endPointParams, props }) {
   const [totalPages, setTotalPages] = useState(1);
   const [studentID, setStudentID] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError]= useState("");
   const navigate = useNavigate();
 
   // dapetin student id
@@ -35,6 +36,7 @@ export default function MyClasses({ endPointParams, props }) {
         setTotalPages(response?.meta?.totalPage || 1);
       } catch (error) {
         console.error("Failed to fetch data", error);
+        setError("Error fetching class data, please try again later.");
       } finally {
         setLoading(false);
       }
@@ -44,7 +46,7 @@ export default function MyClasses({ endPointParams, props }) {
   }, [studentID, currentPage,endPointParams]);
    
   if (loading) return <p className='text-gray-400 ml-[22rem] mr-24 my-16'>Loading...</p>;
-
+  if (error) return <p className="text-red-500 ml-[22rem] mr-24 my-16">{error}</p>;
   return (
     <div className='ml-[22rem] mr-24 my-16'>
       <h1 className='font-bold text-3xl'>My Classes</h1>
