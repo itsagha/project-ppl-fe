@@ -8,9 +8,9 @@ export default function ReportedMessage({ isMessageReported=true }) {
   };
 
   const userReports = [
-    { name: 'mas rusdi', message: 'atmin kontol' },
-    { name: 'slamet galer', message: 'cukimai' },
-    { name: 'azril', message: 'tes kalo report messagenya panjang bgt kek kontol gw lorem ipsum dolor sit amet' },
+    { name: 'mas rusdi', message: 'ini kok ada error ya?' },
+    { name: 'rendy', message: 'halo' },
+    { name: 'azril', message: 'lorem ipsum' },
     { name: 'agung 99', message: 'Test' },
     { name: 'farhan kebab', message: 'Test2' }
   ];
