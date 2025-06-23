@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import PaginationButton from '@/components/PaginationButton';
 import { useNavigate } from 'react-router-dom';
 
-export default function MyClasses({ endPointParams, props }) {
+export default function MyClassesTask({ endPointParams, props }) {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -49,14 +49,14 @@ export default function MyClasses({ endPointParams, props }) {
   if (error) return <p className="text-red-500 ml-[22rem] mr-24 my-16">{error}</p>;
   return (
     <div className='ml-[22rem] mr-24 my-16'>
-      <h1 className='font-bold text-3xl'>My Classes</h1>
+      <h1 className='font-bold text-3xl'>My Classes Tasks</h1>
       {/* parent container classes cards element */}
       <div className='grid grid-cols-3 gap-10 my-8'>
         {posts.map((post) => (
           <div
             key={post.id}
             className='shadow-2xl rounded-2xl p-6 bg-cyan-500 text-white transition duration-500 hover:scale-103 cursor-pointer'
-            onClick={() => navigate(`/MyDetailClasses/${post.id}`, { state: { className: post.name } })}
+            onClick={() => navigate(`/MyDetailClassesTask/${post.id}`, { state: { className: post.name } })}
           >
             <h2 className='text-lg font-bold'>{post.name}</h2>
             <p className='text-justify text-sm  h-16'>{post.description}</p>

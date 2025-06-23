@@ -10,8 +10,6 @@ export default function DashboardTeacher(props) {
 
   useEffect(() => {
     const storedUserData = localStorage.getItem("userData");
-    console.log("Fetched userData from localStorage:", storedUserData);
-    
     if (storedUserData) {
         try {
             const userData = JSON.parse(storedUserData);

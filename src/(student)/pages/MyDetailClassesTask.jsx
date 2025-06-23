@@ -3,16 +3,30 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import PaginationButton from '@/components/PaginationButton';
 
-export default function MyDetailClasses({ endPointParams, props }) {
+export default function MyDetailClassesTask({ endPointParams, props }) {
+  const endPointExercises = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_EXERCISES_URL;
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [studentID, setStudentID] = useState();
+  const [grade, setGrade] = useState({});
+  const [exerciseMap, setExerciseMap] = useState({});
+  const [materialID, setMaterialID] = useState([]);
   const {id} = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { className } = location.state || {}; //ambil className dari state yg udah dikirim MyClasses
+
+  // fetch student id
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      setStudentID(userData.student_id);
+    }
+  }, [studentID]);
 
   // Fetch Materials
   useEffect(() => {
@@ -23,6 +37,8 @@ export default function MyDetailClasses({ endPointParams, props }) {
         const response = await getData(`${endPointParams}/from-class?id=${id}`);
         setPosts(response.materials || []);
         setTotalPages(response?.meta?.totalPage || 1);
+        // dapetin material ID
+        setMaterialID(response.materials.map((item) => item.id));
       } catch (error) {
         console.error("Error fetching materials", error);
         setError("Error fetching materials");
@@ -33,6 +49,45 @@ export default function MyDetailClasses({ endPointParams, props }) {
     fetchMaterials();
   }, [id, currentPage, endPointParams]);
 
+  // GET all grade
+  useEffect(() => {
+    const fetchGrade = async () => {
+      if (!studentID) return;
+      try {
+        const res = await getData(endPointExercises + "/get-all-grade?student_id=" + studentID);
+        
+        const gradesMap = {};
+        for (const item of res) {
+          gradesMap[item.exercise_id] = item.score;
+        }
+        setGrade(gradesMap); // simpan ke state
+      } catch (error) {
+        console.error("Error fetching grade", error);
+      }
+    };
+  
+    fetchGrade();
+  }, [studentID]);
+
+  useEffect(() => {
+    const fetchExerciseIds = async () => {
+      const map = {};
+      for (let material of posts) {
+        try {
+          const res = await getData(`${endPointExercises}?material_id=${material.id}`);
+          if (Array.isArray(res) && res.length > 0) {
+            map[material.id] = res[0].id;
+          }
+        } catch (error) {
+          console.error("Error fetching exercise for material", material.id, error);
+        }
+      }
+      setExerciseMap(map);
+    };
+  
+    if (posts.length > 0) fetchExerciseIds();
+  }, [posts]);
+
   if (loading) return <p className='text-gray-400 ml-[22rem] mr-24 my-16'>Loading...</p>;
   if (error) return <p className="text-red-500 ml-[22rem] mr-24 my-16">{error}</p>;
 
@@ -40,7 +95,7 @@ export default function MyDetailClasses({ endPointParams, props }) {
     // Parent Container
     <div className='ml-[22rem] mr-24 my-16'>
       <h1 className='font-bold text-3xl flex justify-start gap-2 items-center'>
-        My Classes 
+        My Classes Tasks
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -83,10 +138,13 @@ export default function MyDetailClasses({ endPointParams, props }) {
             <div
               key={post.id}
               className='shadow-2xl rounded-2xl p-6 bg-cyan-500 text-white transition duration-500 hover:scale-103 cursor-pointer'
-              onClick={() => navigate(`/MyDetailSubject/${post.id}`, { state: { post, classID: post.class_id } })}
+              onClick={() => navigate(`/MyTask`, { state: { post, classID: post.class_id } })}
             >
               <h2 className='text-lg font-bold'>{post.title}</h2>
               <p className='text-justify text-sm h-16'>{post.description}</p>
+              <p className='text-sm'>
+                Grade: {grade[exerciseMap[post.id]] ?? '-'}
+              </p>
             </div>
           ))
         )}

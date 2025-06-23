@@ -26,13 +26,18 @@ import CreateSubjects12 from "./(teacher)/pages/CreateSubjects12";
 import EditSubjects from "./(teacher)/pages/EditSubjects";
 import DetailSubjects from "./(teacher)/pages/DetailSubjects";
 import SidebarStudent from "./(student)/components/SidebarStudent";
-import MyTaskExam from "./(student)/pages/MyTaskExam";
 import MyClasses from "./(student)/pages/MyClasses";
 import GroupDiscussions from "./(student)/pages/GroupDiscussions";
 import CreateDiscussions from "./(student)/pages/CreateDiscussions";
 import MyDetailClasses from "./(student)/pages/MyDetailClasses";
 import MyDetailSubject from "./(student)/pages/MyDetailSubject";
-
+import CreateExercise from "./(teacher)/pages/CreateExercise";
+import PreviewExercise from "./(teacher)/pages/PreviewExercise";
+import EditExercise from "./(teacher)/pages/EditExercise";
+import MyClassesTask from "./(student)/pages/MyClassesTask";
+import MyDetailClassesTask from "./(student)/pages/MyDetailClassesTask";
+import MyTask from "./(student)/pages/MyTask";
+import MyClassesExam from "./(student)/pages/MyClassesExam";
 const App = () => {
   const location = useLocation();
 
@@ -54,16 +59,22 @@ const App = () => {
     "/CreateSubjects",
     "/EditSubjects",
     "/DetailSubjects",
+    "/CreateExercise",
+    "/PreviewExercise",
+    "/EditExercise",
   ].some(path => location.pathname.startsWith(path));
 
   const isStudentPage = [
     "/DashboardStudent",
     "/MyClasses",
-    "/MyTaskExam",
     "/GroupDiscussions",
     "/CreateDiscussions",
     "/MyDetailClasses",
     "/MyDetailSubject",
+    "/MyClassesTask",
+    "/MyClassesExam",
+    "/MyDetailClassesTask",
+    "/MyTask",
   ].some(path => location.pathname.startsWith(path));
   
   const endPointTest = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_PING_URL;
@@ -73,6 +84,7 @@ const App = () => {
   const endPointClasses = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CLASSES_URL;
   const endPointMaterials = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_MATERIALS_URL;
   const endPointDiscussions = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_DISCUSSIONS_URL;
+  const endPointExercises = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_EXERCISES_URL;
 
   return (
     <>
@@ -103,11 +115,16 @@ const App = () => {
         <Route path="/ManageTaskExam" element={<ManageTaskExam />} />
         <Route path="/DashboardStudent" element={<DashboardStudent />}/>
         <Route path="/MyClasses" element={<MyClasses endPointParams={endPointClasses} />}/>
-        <Route path="/MyTaskExam" element={<MyTaskExam />}/>
         <Route path="/GroupDiscussions" element={<GroupDiscussions endPointParams={endPointDiscussions}/>} />
         <Route path="/CreateDiscussions" element={<CreateDiscussions endPointParams={endPointDiscussions}/>} />
         <Route path="/MyDetailClasses/:id" element={<MyDetailClasses endPointParams={endPointMaterials} />}/>
         <Route path="/MyDetailSubject/:id" element={<MyDetailSubject endPointParams={endPointMaterials} />}/>
+        <Route path="/CreateExercise" element={<CreateExercise endPointParams={endPointExercises} />} />
+        <Route path="/PreviewExercise" element={<PreviewExercise endPointParams={endPointExercises} />} />
+        <Route path="/EditExercise" element={<EditExercise endPointParams={endPointExercises} />} />
+        <Route path="/MyClassesTask" element={<MyClassesTask endPointParams={endPointClasses} />} />
+        <Route path="/MyDetailClassesTask/:id" element={<MyDetailClassesTask endPointParams={endPointMaterials} />} />
+        <Route path="/MyTask" element={<MyTask endPointParams={endPointExercises} />} />
       </Routes>
     </>
   );

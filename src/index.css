@@ -87,6 +87,16 @@ body {
   color: white;
 }
 
+.hoverAnimation5 {
+  transition: transform 0.5s ease, background-color 0.5s ease, color 0.5s ease;
+}
+
+.hoverAnimation5:hover {
+  transform: scale(1.02);
+  background-color: oklch(83.7% 0.128 66.29);
+  color: white;
+}
+
 /* Animasi hover underline */
 .underline-hover {
   @apply relative p-1 text-[#303030];

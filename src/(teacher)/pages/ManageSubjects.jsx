@@ -6,7 +6,7 @@ import Modal from '@/components/Modal';
 import { Link, useNavigate } from 'react-router-dom';
 import { getData, deleteData } from '@/api/axios';
 
-export default function ManageSubjects({ endPointParams, grade, props }) {
+export default function ManageSubjects({ endPointParams, grade }) {
   const endPointClasses = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CLASSES_URL;
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -118,7 +118,7 @@ export default function ManageSubjects({ endPointParams, grade, props }) {
             <button
               className="text-sm flex justify-start items-center gap-0.5 group relative overflow-hidden w-fit cursor-pointer"
               onClick={() => {
-                navigate('/DetailSubjects', { state: { post, classID } });
+                navigate('/DetailSubjects', { state: { post, classID, teacherID } });
               }}
             >
               <span className="relative z-10 mb-1">Preview this subject</span>

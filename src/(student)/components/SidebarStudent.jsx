@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 export default function SidebarStudent({props}) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [showDropdownAssignment, setShowDropdownAssignment] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     alert("Succesfully logout");
     navigate('/');  
+  }
+
+  const toggleDropdownAssigment = () => {
+    setShowDropdownAssignment(!showDropdownAssignment);
   }
 
   return (
@@ -66,8 +71,8 @@ export default function SidebarStudent({props}) {
         </li>
 
         {/* Button my task & exam */}
-        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-4 rounded-lg ${location.pathname === '/MyTaskExam' ? 'text-white bg-primary rounded-lg' : ''}`}>
-          <Link to="/MyTaskExam" className='flex items-center'>
+        <li className='cursor-pointer max-w-fit mb-2'>
+          <div className='px-2 py-1.5 flex items-center justify-start' onClick={toggleDropdownAssigment}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -83,8 +88,33 @@ export default function SidebarStudent({props}) {
                 </path>
               </g>
             </svg>
-            <span className='ml-2'>Tasks & Exams</span>
-          </Link>
+            <span className='mx-2'>Tasks & Exams</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="1em"
+              height="1em"
+              className={`transform duration-300 ${showDropdownAssignment ? "rotate-180" : ""}`}
+            >
+              <path
+                fill="currentColor"
+                d="M12 15.172l4.95-4.95a1 1 0 0 1 1.414 1.414l-6 6a1 1 0 0 1-1.414 0l-6-6a1 1 0 0 1 1.414-1.414z"
+              />
+            </svg>
+          </div>
+
+          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showDropdownAssignment ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <ul className='ml-6 mt-2 text-gray-700 max-w-fit'>
+              <span className='font-normal'>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/MyClassesTask' ? 'text-white bg-primary rounded-lg' : ''}`}>
+                  <Link to="/MyClassesTask">Tasks</Link>
+                </li>
+                <li className={`px-2 py-1 duration-500 ease-in-out mb-0.5 rounded-lg ${location.pathname === '/MyClassesExam' ? 'text-white bg-primary rounded-lg' : ''}`}>
+                  <Link to="/MyClassesExam">Exams</Link>
+                </li>
+              </span>
+            </ul>
+          </div>
         </li>
 
         {/* Button Group discussion */}

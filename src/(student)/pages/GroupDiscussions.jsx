@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/Button';
-import { Link } from 'react-router-dom';
 import { deleteData, getData, postData, updateData } from '@/api/axios';
 import dayjs from 'dayjs';
 import SimpleDropdown from '@/components/SimpleDropdown';
