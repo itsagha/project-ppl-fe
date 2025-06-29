@@ -3,11 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function SidebarTeacher({ ...props }) {
   const [showDropdownSubjects, setshowDropdownSubjects] = useState(false);
+  const [showDropdownExam, setShowDropdownExam] = useState(false);
   const navigate = useNavigate();
 
   const toggleDropdownSubjects = () => {
     setshowDropdownSubjects(!showDropdownSubjects);
   };
+
+  const toggleDropdownExam = () => {
+    setShowDropdownExam(!showDropdownExam);
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -94,30 +99,6 @@ export default function SidebarTeacher({ ...props }) {
               </span>
             </ul>
           </div>
-        </li>
-
-        {/* Button manage task & exam */}
-        <li className={`px-2 py-1.5 duration-500 ease-in-out mb-2 rounded-lg ${location.pathname === '/ManageTaskExam' ? 'text-white bg-primary rounded-lg' : ''}`}>
-          <Link to="/ManageTaskExam" className='flex items-center'>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="1em"
-              height="1em"
-              {...props}
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeMiterlimit="10"
-                strokeWidth="1.5"
-                d="M10 11h8m-8 3h4m-4-6h8m2 14H8.4C5.42 22 3 19.58 3 16.6V5m5.4-2h11.2A2.4 2.4 0 0 1 22 5.4v11.2a2.4 2.4 0 0 1-2.4 2.4H8.4A2.4 2.4 0 0 1 6 16.6V5.4A2.4 2.4 0 0 1 8.4 3">
-              </path>
-            </svg>
-            <span className='ml-2'>Manage Tasks & Exams</span>
-          </Link>
         </li>
       </ul>
 

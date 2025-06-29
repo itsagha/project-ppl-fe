@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import SimpleDropdown from '@/components/SimpleDropdown';
+import Dropdown from '@/components/Dropdown';
 import PaginationButton from '@/components/PaginationButton';
 import Modal from '@/components/Modal';
 import { Link, useNavigate } from 'react-router-dom';
 import { getData, deleteData } from '@/api/axios';
 
-export default function ManageSubjects({ endPointParams, grade }) {
+export default function ManageSubjects({ endPointParams, grade, props }) {
   const endPointClasses = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_CLASSES_URL;
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -114,7 +115,7 @@ export default function ManageSubjects({ endPointParams, grade }) {
                 ]}
               />
             </div>
-            <p className='text-justify text-sm min-h-16'>{post.description}</p>
+            <p className='text-justify text-sm h-16'>{post.description}</p>
             <button
               className="text-sm flex justify-start items-center gap-0.5 group relative overflow-hidden w-fit cursor-pointer"
               onClick={() => {
@@ -133,33 +134,47 @@ export default function ManageSubjects({ endPointParams, grade }) {
 
       {/* Pagination Button */}
       <div className='flex justify-between items-center'>
-        <Link to={`/CreateSubjects${grade}`}>
-          <Button className="flex justify-center gap-2 items-center text-primary border border-primary hoverAnimation">
-            Create Subject
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="1.2em"
-              height="1.2em"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 7v6m-8 6.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20M9 10h6"
-              ></path>
-            </svg>
-          </Button>
-        </Link>
+          <Link to={`/CreateSubjects${grade}`}>
+            <Button className="flex justify-center gap-2 items-center text-primary border border-primary hoverAnimation">
+              Create Subject
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="1.2em"
+                height="1.2em"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 7v6m-8 6.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20M9 10h6"
+                ></path>
+              </svg>
+            </Button>
+          </Link>
 
         <PaginationButton
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
         />
-        <div></div>
+        {/* button dropdwon exam menu*/}
+        <Dropdown
+          buttonLabel="Exam Menu"
+          fields={[
+            {
+              label: 'Create an Exam',
+              value: 'create',
+              onClick: () => navigate('/CreateExam', { state: { classID, teacherID } }),
+            },
+            { label: 'Preview your Exam', 
+              value: 'preview',
+              onClick: () => navigate('/PreviewAnExam', { state: { classID, teacherID } }),
+            },
+          ]}
+        />
       </div>
 
       {/* Delete Materials Modal */}

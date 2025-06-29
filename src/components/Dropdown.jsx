@@ -19,7 +19,7 @@ const Dropdown = ({ className, fields, buttonLabel, buttonContent, onSelect, ...
     <div className={`relative inline-block`}>
       <Button 
         onClick={() => setIsOpen(!isOpen)} 
-        className={`flex justify-between items-center border border-primary text-primary hoverAnimation rounded-lg ${className}`}
+        className={`flex gap-2 justify-between items-center border border-primary text-primary hoverAnimation rounded-lg ${className}`}
       >
         {buttonContent || selectedLabel}
         <svg

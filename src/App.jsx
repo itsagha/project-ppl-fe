@@ -35,9 +35,14 @@ import CreateExercise from "./(teacher)/pages/CreateExercise";
 import PreviewExercise from "./(teacher)/pages/PreviewExercise";
 import EditExercise from "./(teacher)/pages/EditExercise";
 import MyClassesTask from "./(student)/pages/MyClassesTask";
+import MyClassesExam from "./(student)/pages/MyClassesExam";
 import MyDetailClassesTask from "./(student)/pages/MyDetailClassesTask";
 import MyTask from "./(student)/pages/MyTask";
-import MyClassesExam from "./(student)/pages/MyClassesExam";
+import MyExams from "./(student)/pages/MyExams";
+import PreviewAnExam from "./(teacher)/pages/PreviewAnExam";
+import CreateExam from "./(teacher)/pages/CreateExam";
+import EditExam from "./(teacher)/pages/EditExam";
+
 const App = () => {
   const location = useLocation();
 
@@ -62,6 +67,9 @@ const App = () => {
     "/CreateExercise",
     "/PreviewExercise",
     "/EditExercise",
+    "/PreviewAnExam",
+    "/CreateExam",
+    "/EditExam",
   ].some(path => location.pathname.startsWith(path));
 
   const isStudentPage = [
@@ -75,6 +83,7 @@ const App = () => {
     "/MyClassesExam",
     "/MyDetailClassesTask",
     "/MyTask",
+    "/MyExams",
   ].some(path => location.pathname.startsWith(path));
   
   const endPointTest = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_PING_URL;
@@ -85,6 +94,8 @@ const App = () => {
   const endPointMaterials = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_MATERIALS_URL;
   const endPointDiscussions = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_DISCUSSIONS_URL;
   const endPointExercises = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_EXERCISES_URL;
+  const endPointExams = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_EXAMS_URL;
+  const endPointDiscussionsMaterial = import.meta.env.VITE_BASE_URL + import.meta.env.VITE_DISCUSSIONS_MATERIAL_URL;
 
   return (
     <>
@@ -123,8 +134,13 @@ const App = () => {
         <Route path="/PreviewExercise" element={<PreviewExercise endPointParams={endPointExercises} />} />
         <Route path="/EditExercise" element={<EditExercise endPointParams={endPointExercises} />} />
         <Route path="/MyClassesTask" element={<MyClassesTask endPointParams={endPointClasses} />} />
+        <Route path="/MyClassesExam" element={<MyClassesExam endPointParams={endPointClasses} />} />
         <Route path="/MyDetailClassesTask/:id" element={<MyDetailClassesTask endPointParams={endPointMaterials} />} />
         <Route path="/MyTask" element={<MyTask endPointParams={endPointExercises} />} />
+        <Route path="/MyExams" element={<MyExams endPointParams={endPointExams} />} />
+        <Route path="/PreviewAnExam" element={<PreviewAnExam endPointParams={endPointExams} />} />
+        <Route path="/CreateExam" element={<CreateExam endPointParams={endPointExams} />} />
+        <Route path="/EditExam" element={<EditExam endPointParams={endPointExams} />} />
       </Routes>
     </>
   );

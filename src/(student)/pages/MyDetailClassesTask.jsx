@@ -17,7 +17,7 @@ export default function MyDetailClassesTask({ endPointParams, props }) {
   const {id} = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { className } = location.state || {}; //ambil className dari state yg udah dikirim MyClasses
+  const { className } = location.state || {};
 
   // fetch student id
   useEffect(() => {
